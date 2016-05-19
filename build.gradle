@@ -1,0 +1,39 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+
+apply plugin: 'maven'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: "java"
+
+group = 'org.mini2Dx'
+version = '1.0.0-SNAPSHOT'
+
+repositories {
+	mavenLocal()
+	mavenCentral()
+	maven { url "https://mini2dx.org/maven/content/repositories/thirdparty" }
+}
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+task sourceJar(type: Jar) {
+	from sourceSets.main.allJava
+}
+
+dependencies {
+	testCompile 'junit:junit:4.11'
+	testCompile "org.jmock:jmock-junit4:2.5.1"
+	testCompile "org.jmock:jmock-legacy:2.5.1"
+}
+
+task docs(type: Javadoc) {
+	source project.sourceSets.main.allJava
+	classpath = files(project.sourceSets.main.compileClasspath)
+	destinationDir = new File(project.projectDir, 'docs')
+}
+docs.dependsOn build
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.13'
+}
