@@ -17,7 +17,6 @@
 
 package org.mini2Dx.android.beans.beancontext;
 
-import java.awt.Component;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -805,7 +804,7 @@ public class BeanContextSupport extends BeanContextChildSupport implements
      * The implementation checks the peer and all the children that implement
      * <code>Visibility</code> to see if any of their <code>needsGui()</code> 
      * returns true, and if any of the children extends 
-     * <code>java.awt.Component</code>.</p>
+     * java.awt.Component.</p>
      * 
      * @see org.mini2Dx.android.beans.Visibility#needsGui()
      */
@@ -823,9 +822,6 @@ public class BeanContextSupport extends BeanContextChildSupport implements
             }
             Object childs[] = copyChildren();
             for (int i = 0; i < childs.length; i++) {
-                if (childs[i] instanceof Component) {
-                    return true;
-                }
                 Visibility v = getChildVisibility(childs[i]);
                 if (v != null && v.needsGui()) {
                     return true;

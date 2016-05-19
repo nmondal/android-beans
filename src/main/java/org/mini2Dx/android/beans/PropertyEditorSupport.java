@@ -16,9 +16,6 @@
  */
 package org.mini2Dx.android.beans;
 
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -45,10 +42,6 @@ public class PropertyEditorSupport implements PropertyEditor {
 
     public PropertyEditorSupport() {
         source = this;
-    }
-
-    public void paintValue(Graphics gfx, Rectangle box) {
-        // expected
     }
 
     public void setAsText(String text) throws IllegalArgumentException {
@@ -98,10 +91,6 @@ public class PropertyEditorSupport implements PropertyEditor {
     public synchronized void addPropertyChangeListener(
             PropertyChangeListener listener) {
         listeners.add(listener);
-    }
-
-    public Component getCustomEditor() {
-        return null;
     }
 
     public boolean supportsCustomEditor() {

@@ -17,8 +17,6 @@
 
 package org.mini2Dx.android.beans;
 
-import java.awt.Image;
-
 import org.mini2Dx.android.beans.BeanDescriptor;
 import org.mini2Dx.android.beans.BeanInfo;
 import org.mini2Dx.android.beans.EventSetDescriptor;
@@ -44,8 +42,6 @@ public interface BeanInfo {
     public BeanInfo[] getAdditionalBeanInfo();
 
     public BeanDescriptor getBeanDescriptor();
-
-    public Image getIcon(int iconKind);
 
     public int getDefaultPropertyIndex();
 

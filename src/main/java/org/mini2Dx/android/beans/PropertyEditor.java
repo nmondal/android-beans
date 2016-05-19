@@ -17,15 +17,9 @@
 
 package org.mini2Dx.android.beans;
 
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Rectangle;
-
 import org.mini2Dx.android.beans.PropertyChangeListener;
 
 public interface PropertyEditor {
-
-    public void paintValue(Graphics gfx, Rectangle box);
 
     public void setAsText(String text) throws IllegalArgumentException;
 
@@ -42,8 +36,6 @@ public interface PropertyEditor {
     public void removePropertyChangeListener(PropertyChangeListener listener);
 
     public void addPropertyChangeListener(PropertyChangeListener listener);
-
-    public Component getCustomEditor();
 
     public boolean supportsCustomEditor();
 
