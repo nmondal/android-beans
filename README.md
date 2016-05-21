@@ -1,5 +1,7 @@
 # android-beans
 
+[![Build Status](https://travis-ci.org/mini2Dx/android-beans.svg?branch=master)](https://travis-ci.org/mini2Dx/android-beans)
+
 Forked from openbeans.
 
 android-beans is a redistribution of the java.beans package from the Apache Harmony project with additional classes from commons-beanutils and commons-collections to support bean introspection and cloning. The following renaming has occurred:
