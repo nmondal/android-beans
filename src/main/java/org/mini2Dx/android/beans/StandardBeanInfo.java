@@ -29,6 +29,8 @@ import java.util.EventObject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TooManyListenersException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.mini2Dx.android.beans.BeanDescriptor;
 import org.mini2Dx.android.beans.BeanInfo;
@@ -91,7 +93,7 @@ class StandardBeanInfo extends SimpleBeanInfo {
 
     BeanInfo[] additionalBeanInfo = null;
 
-    private Class<?> beanClass;
+    private final Class<?> beanClass;
 
     private int defaultEventIndex = -1;
 
@@ -640,12 +642,20 @@ class StandardBeanInfo extends SimpleBeanInfo {
                 basicMethods.length);
 
         // Loop over the methods found, looking for public non-static methods
-        for (int i = 0; i < basicMethods.length; i++) {
-            int modifiers = basicMethods[i].getModifiers();
+        for (Method basicMethod : basicMethods) {
+            // we do not care about the visibility, and make everything public forcefully
+            try {
+                basicMethod.setAccessible(true);
+            } catch (Throwable t) {
+                Logger.getGlobal().log(Level.WARNING,
+                        String.format("%s method was unable to be made 'public'", basicMethod));
+            }
+
+            int modifiers = basicMethod.getModifiers();
             if (Modifier.isPublic(modifiers)) {
                 // Allocate a MethodDescriptor for this method
                 MethodDescriptor theDescriptor = new MethodDescriptor(
-                        basicMethods[i]);
+                        basicMethod);
                 methodList.add(theDescriptor);
             }
         }
@@ -674,7 +684,7 @@ class StandardBeanInfo extends SimpleBeanInfo {
     private PropertyDescriptor[] introspectProperties(Class<?> stopClass)
             throws IntrospectionException {
 
-        // Get descriptors for the public methods
+        // Get descriptors for all the methods
         MethodDescriptor[] methodDescriptors = introspectMethods();
 
         if (methodDescriptors == null) {
