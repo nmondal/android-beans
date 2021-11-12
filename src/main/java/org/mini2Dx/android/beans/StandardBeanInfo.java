@@ -19,16 +19,10 @@ package org.mini2Dx.android.beans;
 
 import static org.mini2Dx.android.beans.Introspector.decapitalize;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.EventListener;
-import java.util.EventObject;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TooManyListenersException;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -682,11 +676,20 @@ class StandardBeanInfo extends SimpleBeanInfo {
     @SuppressWarnings("unchecked")
     private PropertyDescriptor[] introspectProperties(Class<?> stopClass)
             throws IntrospectionException {
+        // get all fields in
+        ArrayList<PropertyDescriptor> propFieldList = new ArrayList<>();
+        for (Field f : beanClass.getDeclaredFields() ){
+            try {
+                f.setAccessible(true);
+                propFieldList.add( new PropertyDescriptor(f.getName(), f));
+            }catch ( Throwable t){
+            }
+        }
 
         // Get descriptors for all the methods
         MethodDescriptor[] methodDescriptors = introspectMethods();
-
-        if (methodDescriptors == null) {
+        methodDescriptors = methodDescriptors == null? new MethodDescriptor[0]  : methodDescriptors ;
+        if (methodDescriptors.length == 0 && propFieldList.isEmpty()) {
             return null;
         }
 
@@ -743,7 +746,7 @@ class StandardBeanInfo extends SimpleBeanInfo {
             introspectPropertyListener(allMethods[i].getMethod());
         }
         // Put the properties found into the PropertyDescriptor array
-        ArrayList<PropertyDescriptor> propertyList = new ArrayList<PropertyDescriptor>();
+        ArrayList<PropertyDescriptor> propertyList = new ArrayList<>(propFieldList);
 
         for (Map.Entry<String, HashMap> entry : propertyTable.entrySet()) {
             String propertyName = entry.getKey();
@@ -789,7 +792,6 @@ class StandardBeanInfo extends SimpleBeanInfo {
             }
             propertyList.add(propertyDesc);
         }
-
         PropertyDescriptor[] theProperties = new PropertyDescriptor[propertyList
                 .size()];
         propertyList.toArray(theProperties);

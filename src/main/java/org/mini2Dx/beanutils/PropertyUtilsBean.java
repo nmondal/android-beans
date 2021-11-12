@@ -20,6 +20,7 @@ package org.mini2Dx.beanutils;
 
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -1243,18 +1244,23 @@ public class PropertyUtilsBean {
             throw new NoSuchMethodException("Unknown property '" +
                     name + "' on class '" + bean.getClass() + "'" );
         }
-        Method readMethod = getReadMethod(bean.getClass(), descriptor);
-        if (readMethod == null) {
-            throw new NoSuchMethodException("Property '" + name +
-                    "' has no getter method in class '" + bean.getClass() + "'");
+        if ( descriptor.isSynthetic() ){
+            Method readMethod = getReadMethod(bean.getClass(), descriptor);
+            if (readMethod == null) {
+                throw new NoSuchMethodException("Property '" + name +
+                        "' has no getter method in class '" + bean.getClass() + "'");
+            }
+            // Call the property getter and return the value
+            Object value = invokeMethod(readMethod, bean, EMPTY_OBJECT_ARRAY);
+            return (value);
         }
-
-        // Call the property getter and return the value
-        Object value = invokeMethod(readMethod, bean, EMPTY_OBJECT_ARRAY);
+        Object value = getValueFromField(descriptor.getProperty(), bean);
+        if ( value == NO_VALUE ){
+            throw new IllegalAccessException("Property '" + name +
+                    "' is not accessible in '" + bean.getClass() + "'");
+        }
         return (value);
-
     }
-
 
     /**
      * <p>Return an accessible property setter method for this property,
@@ -2059,6 +2065,21 @@ public class PropertyUtilsBean {
         values[0] = value;
         invokeMethod(writeMethod, bean, values);
 
+    }
+
+    private final Object NO_VALUE = new Object();
+
+    private Object getValueFromField(Field field, Object bean){
+        if(bean == null) {
+            throw new IllegalArgumentException("No bean specified " +
+                    "- this should have been checked before reaching this method");
+        }
+
+        try {
+            return field.get(bean);
+        }catch (Throwable t){
+            return NO_VALUE;
+        }
     }
 
     /** This just catches and wraps IllegalArgumentException. */

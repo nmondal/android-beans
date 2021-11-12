@@ -86,8 +86,11 @@ public class PropertyDescriptor extends FeatureDescriptor {
         this.property = null;
     }
 
-    private Field getField( String propertyName, Class<?> beanClass){
-        return null;
+    public PropertyDescriptor(String propertyName, Field field){
+        this.setName(propertyName);
+        this.setter = null;
+        this.getter = null;
+        this.property = field;
     }
 
     public PropertyDescriptor(String propertyName, Class<?> beanClass)
@@ -103,15 +106,8 @@ public class PropertyDescriptor extends FeatureDescriptor {
             setReadMethod(beanClass,
                     createDefaultMethodName(propertyName, "is")); //$NON-NLS-1$
         } catch (Exception e) {
-            try {
-                setReadMethod(beanClass, createDefaultMethodName(propertyName,
-                        "get")); //$NON-NLS-1$
-            }catch ( Throwable t){
-                property = getField(propertyName,beanClass); // no need to bother
-                return;
-            }
+                setReadMethod(beanClass, createDefaultMethodName(propertyName,"get")); //$NON-NLS-1$
         }
-
         setWriteMethod(beanClass, createDefaultMethodName(propertyName, "set")); //$NON-NLS-1$
         this.property = null;
     }
@@ -162,6 +158,10 @@ public class PropertyDescriptor extends FeatureDescriptor {
 
     public Method getReadMethod() {
         return getter;
+    }
+
+    public Field getProperty() {
+        return property;
     }
 
     @Override
