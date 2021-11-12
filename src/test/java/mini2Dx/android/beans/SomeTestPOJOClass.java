@@ -15,8 +15,9 @@ public class SomeTestPOJOClass {
     public String getS(){
         return s;
     }
-    private double d = 0.0;
+    private double d = 42.0;
     private double getD(){
         return d;
     }
+    private boolean someBoolean = false;
 }

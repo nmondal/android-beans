@@ -866,14 +866,11 @@ public class PropertyUtilsBean {
      * @exception NoSuchMethodException if an accessor method for this
      *  propety cannot be found
      */
-    public Object getProperty(Object bean, String name)
+    public <T> T getProperty(Object bean, String name)
             throws IllegalAccessException, InvocationTargetException,
             NoSuchMethodException {
-
-        return (getNestedProperty(bean, name));
-
+        return (T)(getNestedProperty(bean, name));
     }
-
 
     /**
      * <p>Retrieve the property descriptor for the specified property of the

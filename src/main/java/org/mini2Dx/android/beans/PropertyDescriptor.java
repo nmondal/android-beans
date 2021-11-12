@@ -18,6 +18,7 @@
 package org.mini2Dx.android.beans;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
@@ -32,6 +33,8 @@ public class PropertyDescriptor extends FeatureDescriptor {
     private Method getter;
 
     private Method setter;
+
+    private final Field  property  ;
 
     private Class<?> propertyEditorClass;
 
@@ -68,6 +71,7 @@ public class PropertyDescriptor extends FeatureDescriptor {
             }
             setWriteMethod(beanClass, setterName);
         }
+        this.property = null;
     }
 
     public PropertyDescriptor(String propertyName, Method getter, Method setter)
@@ -79,6 +83,11 @@ public class PropertyDescriptor extends FeatureDescriptor {
         this.setName(propertyName);
         setReadMethod(getter);
         setWriteMethod(setter);
+        this.property = null;
+    }
+
+    private Field getField( String propertyName, Class<?> beanClass){
+        return null;
     }
 
     public PropertyDescriptor(String propertyName, Class<?> beanClass)
@@ -94,11 +103,17 @@ public class PropertyDescriptor extends FeatureDescriptor {
             setReadMethod(beanClass,
                     createDefaultMethodName(propertyName, "is")); //$NON-NLS-1$
         } catch (Exception e) {
-            setReadMethod(beanClass, createDefaultMethodName(propertyName,
-                    "get")); //$NON-NLS-1$
+            try {
+                setReadMethod(beanClass, createDefaultMethodName(propertyName,
+                        "get")); //$NON-NLS-1$
+            }catch ( Throwable t){
+                property = getField(propertyName,beanClass); // no need to bother
+                return;
+            }
         }
 
         setWriteMethod(beanClass, createDefaultMethodName(propertyName, "set")); //$NON-NLS-1$
+        this.property = null;
     }
 
     public void setWriteMethod(Method setter) throws IntrospectionException {
@@ -122,8 +137,7 @@ public class PropertyDescriptor extends FeatureDescriptor {
 
     public void setReadMethod(Method getter) throws IntrospectionException {
         if (getter != null) {
-            int modifiers = getter.getModifiers();
-            if (!Modifier.isPublic(modifiers)) {
+            if (!getter.isAccessible()) {
                 throw new IntrospectionException(Messages.getString("beans.0A")); //$NON-NLS-1$
             }
             Class<?>[] parameterTypes = getter.getParameterTypes();
@@ -217,6 +231,10 @@ public class PropertyDescriptor extends FeatureDescriptor {
 
     public boolean isBound() {
         return bound;
+    }
+
+    public boolean isSynthetic() {
+        return property == null;
     }
 
     String createDefaultMethodName(String propertyName, String prefix) {

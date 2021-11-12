@@ -650,9 +650,8 @@ class StandardBeanInfo extends SimpleBeanInfo {
                 Logger.getGlobal().log(Level.WARNING,
                         String.format("%s method was unable to be made 'public'", basicMethod));
             }
-
-            int modifiers = basicMethod.getModifiers();
-            if (Modifier.isPublic(modifiers)) {
+            //int modifiers = basicMethod.getModifiers();
+            if (basicMethod.isAccessible()) {
                 // Allocate a MethodDescriptor for this method
                 MethodDescriptor theDescriptor = new MethodDescriptor(
                         basicMethod);

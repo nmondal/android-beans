@@ -775,8 +775,8 @@ public class MethodUtils {
             return (null);
         }
 
-        // If the requested method is not public we cannot call it
-        if (!Modifier.isPublic(method.getModifiers())) {
+        // If the requested method is not accessible we cannot call it
+        if ( !method.isAccessible()) {
             return (null);
         }
 
