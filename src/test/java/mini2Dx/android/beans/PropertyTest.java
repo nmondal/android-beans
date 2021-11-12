@@ -23,7 +23,7 @@ public class PropertyTest {
     public void beanPropertyDescriptorTest() {
         PropertyDescriptor[] pds = bi.getPropertyDescriptors();
         Assert.assertNotNull(pds);
-        Assert.assertEquals(3, pds.length);
+        Assert.assertEquals(4, pds.length);
     }
 
     @Test
