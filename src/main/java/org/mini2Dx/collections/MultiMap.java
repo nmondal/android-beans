@@ -47,6 +47,7 @@ import java.util.Map;
  * @author James Strachan
  * @author Stephen Colebourne
  */
+@SuppressWarnings("rawtypes")
 public interface MultiMap extends Map {
 
     /**
@@ -66,9 +67,14 @@ public interface MultiMap extends Map {
      * @throws ClassCastException if the key or value is of an invalid type
      * @throws NullPointerException if the key or value is null and null is invalid
      */
-    public Object remove(Object key, Object item);
+    Object removeAndReturn(Object key, Object item);
 
-    //-----------------------------------------------------------------------
+    @Override
+    default boolean remove(Object key, Object value) {
+        return null != removeAndReturn(key,value);
+    }
+
+//-----------------------------------------------------------------------
     /**
      * Gets the number of keys in this map.
      * <p>

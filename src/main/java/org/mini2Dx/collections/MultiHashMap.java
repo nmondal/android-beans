@@ -66,6 +66,7 @@ import org.mini2Dx.collections.iterators.EmptyIterator;
  * @author Serhiy Yevtushenko
  * @author Robert Ribnitz
  */
+@SuppressWarnings("rawtypes")
 public class MultiHashMap extends HashMap implements MultiMap {
     
     // backed values collection
@@ -331,7 +332,7 @@ public class MultiHashMap extends HashMap implements MultiMap {
      * @param item  the value to remove
      * @return the value removed (which was passed in), null if nothing removed
      */
-    public Object remove(Object key, Object item) {
+    public Object removeAndReturn(Object key, Object item) {
         Collection valuesForKey = getCollection(key);
         if (valuesForKey == null) {
             return null;

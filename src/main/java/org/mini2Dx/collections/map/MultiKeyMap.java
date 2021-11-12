@@ -77,6 +77,7 @@ import org.mini2Dx.collections.keyvalue.MultiKey;
  *
  * @author Stephen Colebourne
  */
+@SuppressWarnings("rawtypes")
 public class MultiKeyMap
         implements IterableMap, Serializable {
 
@@ -197,7 +198,7 @@ public class MultiKeyMap
      * @param key2  the second key
      * @return the value mapped to the removed key, null if key not in map
      */
-    public Object remove(Object key1, Object key2) {
+    public Object removeAndReturn(Object key1, Object key2) {
         int hashCode = hash(key1, key2);
         int index = map.hashIndex(hashCode, map.data.length);
         AbstractHashedMap.HashEntry entry = map.data[index];

@@ -61,6 +61,7 @@ import org.mini2Dx.collections.iterators.IteratorChain;
  * @version $Revision: 1713175 $ $Date: 2015-11-07 21:47:04 +0100 (Sat, 07 Nov 2015) $
  * @since Commons Collections 3.2
  */
+@SuppressWarnings("rawtypes")
 public class MultiValueMap extends AbstractMapDecorator implements MultiMap {
 
     /** The factory for creating value collections. */
@@ -153,7 +154,7 @@ public class MultiValueMap extends AbstractMapDecorator implements MultiMap {
      * @param value the value to remove
      * @return the value removed (which was passed in), null if nothing removed
      */
-    public Object remove(Object key, Object value) {
+    public Object removeAndReturn(Object key, Object value) {
         Collection valuesForKey = getCollection(key);
         if (valuesForKey == null) {
             return null;
