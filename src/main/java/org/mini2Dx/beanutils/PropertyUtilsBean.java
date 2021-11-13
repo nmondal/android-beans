@@ -2054,17 +2054,34 @@ public class PropertyUtilsBean {
             throw new NoSuchMethodException("Unknown property '" +
                     name + "' on class '" + bean.getClass() + "'" );
         }
-        Method writeMethod = getWriteMethod(bean.getClass(), descriptor);
-        if (writeMethod == null) {
-            throw new NoSuchMethodException("Property '" + name +
-                    "' has no setter method in class '" + bean.getClass() + "'");
+        if ( descriptor.isSynthetic() ) { // go via method
+            Method writeMethod = getWriteMethod(bean.getClass(), descriptor);
+            if (writeMethod == null) {
+                throw new NoSuchMethodException("Property '" + name +
+                        "' has no setter method in class '" + bean.getClass() + "'");
+            }
+
+            // Call the property setter method
+            Object[] values = new Object[1];
+            values[0] = value;
+            invokeMethod(writeMethod, bean, values);
+        } else {
+            // now this is field
+            setValueToField(descriptor.getProperty(), bean, value);
+        }
+    }
+
+    private void setValueToField(Field field, Object bean, Object value){
+        if(bean == null) {
+            throw new IllegalArgumentException("No bean specified " +
+                    "- this should have been checked before reaching this method");
         }
 
-        // Call the property setter method
-        Object[] values = new Object[1];
-        values[0] = value;
-        invokeMethod(writeMethod, bean, values);
-
+        try {
+            field.set(bean, value);
+        }catch (Throwable t){
+            throw new RuntimeException(t);
+        }
     }
 
     private final Object NO_VALUE = new Object();
@@ -2074,7 +2091,6 @@ public class PropertyUtilsBean {
             throw new IllegalArgumentException("No bean specified " +
                     "- this should have been checked before reaching this method");
         }
-
         try {
             return field.get(bean);
         }catch (Throwable t){

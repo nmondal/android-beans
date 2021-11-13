@@ -36,4 +36,14 @@ public class PropertyTest {
         boolean b = pb.getProperty(subject,"someBoolean");
         Assert.assertFalse(b);
     }
+
+    @Test
+    public void beanPropertySetValueTest() throws Exception {
+        PropertyUtilsBean pb = new PropertyUtilsBean();
+        pb.setProperty(subject,"i", 42);
+        Assert.assertEquals(42, subject.getI());
+        pb.setProperty(subject,"someBoolean", true);
+        boolean b = pb.getProperty(subject,"someBoolean");
+        Assert.assertTrue(b);
+    }
 }
